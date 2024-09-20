@@ -1,0 +1,16 @@
+const Map<String, String> locations = {
+  'Tokyo (Japan)': 'Asia/Tokyo',
+  'Los Angeles (USA)': 'America/Los_Angeles',
+  'New York (USA)': 'America/New_York',
+  'London (UK)': 'Europe/London',
+  'Paris (France)': 'Europe/Paris',
+  'Sydney (Australia)': 'Australia/Sydney',
+  'Shanghai (China)': 'Asia/Shanghai',
+  'Hawaii (USA)': 'Pacific/Honolulu',
+  'Chicago (USA)': 'America/Chicago',
+  'Madrid (Spain)': 'Europe/Madrid',
+  'Bangkok (Thailand)': 'Asia/Bangkok',
+  'Taipei (Taiwan)': 'Asia/Taipei',
+  'Kuala Lumpur (Malaysia)': 'Asia/Kuala_Lumpur',
+  'Toronto (USA)': 'America/Toronto',
+};
