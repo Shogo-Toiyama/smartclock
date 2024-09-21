@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:smartclock/presentation/router/router.dart';
-import 'package:flutter/services.dart';
 import 'package:device_preview/device_preview.dart';
 
 void main() async {
@@ -12,7 +11,6 @@ void main() async {
     enabled: true,
     builder: (context) => const ProviderScope(child: MyApp()),
   );
-  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   runApp(app);
 }
 

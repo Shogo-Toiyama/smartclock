@@ -22,7 +22,7 @@ class Clock extends ConsumerWidget {
     int min = dateTime.minute;
     int sec = dateTime.second;
 
-    List<String> weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    List<String> weekdays = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     bool daytime = (hour >= 7 && hour <= 19);
 
     return GestureDetector(
