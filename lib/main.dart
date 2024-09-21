@@ -1,18 +1,19 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:smartclock/presentation/router/router.dart';
-import 'package:flutter/services.dart';
 import 'package:device_preview/device_preview.dart';
 
 void main() async {
   await Hive.initFlutter();
   await Hive.openBox('settingsBox');
-  final app = DevicePreview(
-    enabled: true,
-    builder: (context) => const ProviderScope(child: MyApp()),
-  );
-  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  final app = kReleaseMode
+      ? const ProviderScope(child: MyApp())
+      : DevicePreview(
+          enabled: true,
+          builder: (context) => const ProviderScope(child: MyApp()),
+        );
   runApp(app);
 }
 
