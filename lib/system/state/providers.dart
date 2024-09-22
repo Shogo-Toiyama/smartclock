@@ -86,7 +86,7 @@ class FontSizeNotifier extends Notifier<double> {
   @override
   double build() {
     _loadFontSize();
-    return 50;
+    return 35;
   }
 
   Future<void> _loadFontSize() async {

@@ -1,0 +1,8 @@
+app name: smartclock
+app type: linux
+display resolution: 1280 x 720
+
+Database (Hive):
+    settingsBox:
+        clockIndex
+        fontSize

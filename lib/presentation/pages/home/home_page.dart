@@ -51,7 +51,7 @@ class HomePage extends HookConsumerWidget {
                   Icons.calendar_month,
                   size: iconSize,
                 ),
-                color: pageNameHook.value == 'Calender'
+                color: pageNameHook.value == 'Calendar'
                     ? Colors.white
                     : ColorPalette().customGrey(70),
               ),

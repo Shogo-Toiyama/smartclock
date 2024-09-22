@@ -25,3 +25,7 @@ Future<List<int>?> loadDataListInt(String key) async {
     return null;
   }
 }
+
+Future<void> resetAll() async {
+  
+}
