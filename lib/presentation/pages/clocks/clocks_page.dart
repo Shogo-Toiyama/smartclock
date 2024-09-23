@@ -42,6 +42,7 @@ class ClocksPage extends HookConsumerWidget {
           children: [
             for (int i = 0; i < datetimes.length; i++)
               Clock(
+                thisIndex: i,
                 dateTime: datetimes[i],
                 location: cityNames[clockIndexes[i]],
               ),

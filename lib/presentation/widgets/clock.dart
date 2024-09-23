@@ -9,13 +9,23 @@ const double borderRadius = 10;
 const double borderWidth = 10;
 
 class Clock extends HookConsumerWidget {
-  const Clock({super.key, required this.dateTime, required this.location});
-
+  const Clock(
+      {super.key,
+      required this.thisIndex,
+      required this.dateTime,
+      required this.location});
+  final int thisIndex;
   final tz.TZDateTime dateTime;
   final String location;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final menuBarrierOpacity = useState(0.0);
+    final moveHereOpacity = useState(0.0);
+    final moveCancelOpacity = useState(0.0);
+    final removeAlartOpacity = useState(0.0);
+    final selectingThisClock = useState(false);
+
     final animationController =
         useAnimationController(duration: const Duration(milliseconds: 300));
 
@@ -27,15 +37,30 @@ class Clock extends HookConsumerWidget {
 
     void toggleMenu() {
       if (animationController.isDismissed) {
+        menuBarrierOpacity.value = 1.0;
         animationController.forward();
       } else {
         animationController.reverse();
+        menuBarrierOpacity.value = 0.0;
       }
     }
 
-    final menuBarrierOpacity = useState(0.0);
+    final double fontSize = ref.read(fontSizeProvider);
+    int moveState = ref.watch(clockMoveStateProvider);
 
-    final double fontSize = ref.watch(fontSizeProvider);
+    useEffect(() {
+      if (moveState == 1 && !selectingThisClock.value) {
+        moveHereOpacity.value = 1.0;
+      } else if (moveState == 1 && selectingThisClock.value) {
+        moveCancelOpacity.value = 1.0;
+      } else if (moveState == 0) {
+        moveHereOpacity.value = 0.0;
+        moveCancelOpacity.value = 0.0;
+        selectingThisClock.value = false;
+      }
+      return null;
+    }, [moveState]);
+
     int month = dateTime.month;
     int date = dateTime.day;
     int weekday = dateTime.weekday;
@@ -64,9 +89,7 @@ class Clock extends HookConsumerWidget {
     return Stack(
       children: [
         GestureDetector(
-          onTap: () {
-            debugPrint('$location: $dateTime');
-          },
+          onTap: () {},
           child: Container(
             decoration: BoxDecoration(
                 color: clockBGColor,
@@ -101,7 +124,6 @@ class Clock extends HookConsumerWidget {
                     IconButton(
                         onPressed: () {
                           toggleMenu();
-                          menuBarrierOpacity.value = 1.0;
                         },
                         icon: Icon(
                           Icons.menu,
@@ -209,7 +231,9 @@ class Clock extends HookConsumerWidget {
                                   ),
                                 ],
                               ),
-                              onTap: () {},
+                              onTap: () {
+                                toggleMenu();
+                              },
                             ),
                             ListTile(
                               title: Row(
@@ -224,7 +248,9 @@ class Clock extends HookConsumerWidget {
                                   ),
                                 ],
                               ),
-                              onTap: () {},
+                              onTap: () {
+                                toggleMenu();
+                              },
                             ),
                             ListTile(
                               title: Row(
@@ -239,7 +265,16 @@ class Clock extends HookConsumerWidget {
                                   ),
                                 ],
                               ),
-                              onTap: () {},
+                              onTap: () {
+                                selectingThisClock.value = true;
+                                toggleMenu();
+                                ref
+                                    .read(clockMoveStateProvider.notifier)
+                                    .selecting(thisIndex);
+                                ref
+                                    .read(showAddClockButtonProvider.notifier)
+                                    .changeState(false);
+                              },
                             ),
                             ListTile(
                               title: Row(
@@ -254,7 +289,13 @@ class Clock extends HookConsumerWidget {
                                   ),
                                 ],
                               ),
-                              onTap: () {},
+                              onTap: () {
+                                toggleMenu();
+                                ref
+                                    .read(showAddClockButtonProvider.notifier)
+                                    .changeState(false);
+                                removeAlartOpacity.value = 1.0;
+                              },
                             ),
                           ],
                         ),
@@ -268,7 +309,6 @@ class Clock extends HookConsumerWidget {
                             child: IconButton(
                                 onPressed: () {
                                   toggleMenu();
-                                  menuBarrierOpacity.value = 0.0;
                                 },
                                 icon: Icon(
                                   Icons.close,
@@ -277,6 +317,207 @@ class Clock extends HookConsumerWidget {
                                 )),
                           ),
                         ]),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: borderWidth,
+          bottom: borderWidth,
+          right: borderWidth,
+          left: borderWidth,
+          child: IgnorePointer(
+            ignoring: removeAlartOpacity.value == 0.0,
+            child: AnimatedOpacity(
+              opacity: removeAlartOpacity.value,
+              duration: const Duration(milliseconds: 300),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: ColorPalette().customGrey(40, opacity: 0.9)),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                        size: 40,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        'Are you sure you want to \nremove this clock?',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: fontSize * 0.5,
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Container(
+                            decoration: const BoxDecoration(
+                                color: Colors.red,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: TextButton(
+                              onPressed: () {
+                                removeAlartOpacity.value = 0.0;
+                                List<int> clockIndex =
+                                    ref.read(clockIndexProvider);
+                                clockIndex.removeAt(thisIndex);
+                                ref
+                                    .read(clockIndexProvider.notifier)
+                                    .changeClockIndex(clockIndex);
+                                ref
+                                    .read(showAddClockButtonProvider.notifier)
+                                    .changeState(true);
+                              },
+                              child: Text(
+                                'Yes',
+                                style: TextStyle(
+                                    fontSize: fontSize * 0.5,
+                                    color: Colors.white),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 60,
+                          ),
+                          Container(
+                            decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: TextButton(
+                              onPressed: () {
+                                removeAlartOpacity.value = 0.0;
+                                ref
+                                    .read(showAddClockButtonProvider.notifier)
+                                    .changeState(true);
+                              },
+                              child: Text(
+                                'No',
+                                style: TextStyle(
+                                    fontSize: fontSize * 0.5,
+                                    color: Colors.black),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: borderWidth,
+          bottom: borderWidth,
+          right: borderWidth,
+          left: borderWidth,
+          child: IgnorePointer(
+            ignoring: moveCancelOpacity.value == 0.0,
+            child: AnimatedOpacity(
+              opacity: moveCancelOpacity.value,
+              duration: const Duration(milliseconds: 300),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: ColorPalette().customGrey(40, opacity: 0.9)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        ref
+                            .read(clockMoveStateProvider.notifier)
+                            .selected(thisIndex);
+                        ref
+                            .read(showAddClockButtonProvider.notifier)
+                            .changeState(true);
+                      },
+                      icon: const Icon(
+                        Icons.close,
+                        color: Colors.red,
+                        size: 60,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'Cancel',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: fontSize * 0.5,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: borderWidth,
+          bottom: borderWidth,
+          right: borderWidth,
+          left: borderWidth,
+          child: IgnorePointer(
+            ignoring: moveHereOpacity.value == 0.0,
+            child: AnimatedOpacity(
+              opacity: moveHereOpacity.value,
+              duration: const Duration(milliseconds: 300),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: ColorPalette().customGrey(40, opacity: 0.9)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        ref
+                            .read(clockMoveStateProvider.notifier)
+                            .selected(thisIndex);
+
+                        ref
+                            .read(showAddClockButtonProvider.notifier)
+                            .changeState(true);
+                      },
+                      icon: const Icon(
+                        Icons.beenhere,
+                        color: Colors.white,
+                        size: 40,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      'Move here',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: fontSize * 0.5,
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -293,24 +534,28 @@ class AddClock extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    double fontSize = ref.watch(fontSizeProvider);
-    List<int> clockIndex = ref.watch(clockIndexProvider);
-    return GestureDetector(
-      onTap: () {
-        clockIndex.add(clockIndex.length);
-        ref.read(clockIndexProvider.notifier).changeClockIndex(clockIndex);
-      },
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: const BorderRadius.all(Radius.circular(borderRadius)),
-            border: Border.all(
-              color: Colors.grey,
-              width: 10,
-            )),
-        child: Center(
-          child: Text('+',
-              style: TextStyle(color: Colors.white, fontSize: fontSize * 3)),
+    double fontSize = ref.read(fontSizeProvider);
+    List<int> clockIndex = ref.read(clockIndexProvider);
+    return Visibility(
+      visible: ref.watch(showAddClockButtonProvider),
+      child: GestureDetector(
+        onTap: () {
+          clockIndex.add(clockIndex.length);
+          ref.read(clockIndexProvider.notifier).changeClockIndex(clockIndex);
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius:
+                  const BorderRadius.all(Radius.circular(borderRadius)),
+              border: Border.all(
+                color: Colors.grey,
+                width: 10,
+              )),
+          child: Center(
+            child: Text('+',
+                style: TextStyle(color: Colors.white, fontSize: fontSize * 3)),
+          ),
         ),
       ),
     );

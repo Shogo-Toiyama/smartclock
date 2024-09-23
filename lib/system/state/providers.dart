@@ -9,24 +9,24 @@ import 'package:timezone/timezone.dart' as tz;
 // class NameNotifier extends Notifier<type> {
 //   @override
 //   type build() {
-//     _loadName();
-//     return default_value;
+// //     _loadName();
+//     return defaultValue;
 //   }
 
-//   Future<void> _loadName() async {
-//     final name = await loadData<type>('name');
-//     if (name != null) {
-//       state = name;
-//     }
-//   }
+// //   Future<void> _loadName() async {
+// //     final name = await loadData<type>('name');
+// //     if (name != null) {
+// //       state = name;
+// //     }
+// //   }
 
-//   void function(type new_value){
-//     state = new_value;
-//     saveData('name', new_value);
+//   void function(type newState){
+//     state = newState;
+// //      saveData('name', newState);
 //   }
 // }
 
-// final nameProvider = NotifierProvider<NameeNotifier, type>((){
+// final nameProvider = NotifierProvider<NameNotifier, type>((){
 //   return NameNotifier();
 // });
 // ----------------------------------------------------------------------
@@ -104,4 +104,57 @@ class FontSizeNotifier extends Notifier<double> {
 
 final fontSizeProvider = NotifierProvider<FontSizeNotifier, double>(() {
   return FontSizeNotifier();
+});
+
+
+// Clock Move State (whether a clock is selected to move or not)
+int moveFrom = -1;
+
+class ClockMoveStateNotifier extends Notifier<int> {
+  @override
+  int build() {
+    return 0;
+  }
+
+  void selecting(selectingIndex){
+    moveFrom = selectingIndex;
+    state = 1;
+  }
+
+  void selected(int moveTo){
+    List<int> clockIndex = ref.read(clockIndexProvider);
+    if (moveFrom > -1 && moveFrom < clockIndex.length && moveTo > -1 && moveTo < clockIndex.length) {
+      if (moveTo == moveFrom) {
+        moveFrom = -1;
+        state = 0;
+      } else {
+        log('Move $moveFrom to $moveTo.');
+        int valOfMoveFrom = clockIndex[moveFrom];
+        clockIndex.removeAt(moveFrom);
+        clockIndex.insert(moveTo, valOfMoveFrom);
+        ref.read(clockIndexProvider.notifier).changeClockIndex(clockIndex);
+        moveFrom = -1;
+        state = 0;
+      }
+    }
+  }
+}
+
+final clockMoveStateProvider = NotifierProvider<ClockMoveStateNotifier, int>((){
+  return ClockMoveStateNotifier();
+});
+
+class ShowAddClockButtonNotifier extends Notifier<bool> {
+  @override
+  bool build() {
+    return true;
+  }
+
+  void changeState(bool newState){
+    state = newState;
+  }
+}
+
+final showAddClockButtonProvider = NotifierProvider<ShowAddClockButtonNotifier, bool>((){
+  return ShowAddClockButtonNotifier();
 });
