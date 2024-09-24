@@ -14,6 +14,7 @@ class HomePage extends HookConsumerWidget {
     double fontSize = ref.watch(fontSizeProvider);
     final pageNameHook = useState<String>('Clock');
     double iconSize = fontSize * 2;
+    Color inactiveButtonColor = ColorPalette().customGrey(90);
 
     const Map<String, Widget> pages = {
       'Clock': ClocksPage(),
@@ -41,7 +42,7 @@ class HomePage extends HookConsumerWidget {
                 ),
                 color: pageNameHook.value == 'Clock'
                     ? Colors.white
-                    : ColorPalette().customGrey(70),
+                    : inactiveButtonColor,
               ),
               IconButton(
                 onPressed: () {
@@ -53,7 +54,7 @@ class HomePage extends HookConsumerWidget {
                 ),
                 color: pageNameHook.value == 'Calendar'
                     ? Colors.white
-                    : ColorPalette().customGrey(70),
+                    : inactiveButtonColor,
               ),
               IconButton(
                 onPressed: () {
@@ -65,7 +66,7 @@ class HomePage extends HookConsumerWidget {
                 ),
                 color: pageNameHook.value == 'Note'
                     ? Colors.white
-                    : ColorPalette().customGrey(70),
+                    : inactiveButtonColor,
               ),
               IconButton(
                 onPressed: () {
@@ -77,7 +78,7 @@ class HomePage extends HookConsumerWidget {
                 ),
                 color: pageNameHook.value == 'Notification'
                     ? Colors.white
-                    : ColorPalette().customGrey(70),
+                    : inactiveButtonColor,
               ),
               const Spacer(),
               IconButton(
@@ -90,7 +91,7 @@ class HomePage extends HookConsumerWidget {
                 ),
                 color: pageNameHook.value == 'Setting'
                     ? Colors.white
-                    : ColorPalette().customGrey(70),
+                    : inactiveButtonColor,
               ),
               IconButton(
                 onPressed: () {
@@ -102,7 +103,7 @@ class HomePage extends HookConsumerWidget {
                 ),
                 color: pageNameHook.value == 'Power'
                     ? Colors.white
-                    : ColorPalette().customGrey(70),
+                    : inactiveButtonColor,
               ),
               const SizedBox(
                 height: 20,

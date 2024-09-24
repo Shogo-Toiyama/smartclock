@@ -15,6 +15,12 @@ class ClocksPage extends HookConsumerWidget {
     final clockIndexes = ref.watch(clockIndexProvider);
     final datetimes = ref.watch(timesProvider);
 
+    int findInterval() {
+      DateTime now = DateTime.now();
+      int interval = 3600 - (now.minute * 60 + now.second);
+      return interval;
+    }
+
     useEffect(() {
       Future.microtask(() {
         ref.read(timesProvider.notifier).changeTimesList(clockIndexes);
@@ -23,8 +29,20 @@ class ClocksPage extends HookConsumerWidget {
     }, []);
 
     useEffect(() {
+      int interval = findInterval();
+      int counter = 0;
       Timer timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
         ref.read(timesProvider.notifier).incrementOneSec();
+        if (counter == interval) {
+          ref.read(timesProvider.notifier).changeTimesList(clockIndexes);
+          counter = 0;
+          interval = findInterval();
+          debugPrint('Update datetimes!\Now: ${DateTime.now()}');
+        }
+        counter += 1;
+        debugPrint(
+            'interval: $interval, counter: $counter, \n    Actual : ${DateTime.now()}');
+        debugPrint('    Showing: ${ref.read(timesProvider)[0]}');
       });
       return timer.cancel;
     }, []);
@@ -34,37 +52,39 @@ class ClocksPage extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: ColorPalette.pageBackground,
       body: GridView.count(
-        padding: const EdgeInsets.all(30),
-        crossAxisCount: 3,
-        mainAxisSpacing: 30,
-        crossAxisSpacing: 30,
-        childAspectRatio: 1.6,
-        children: [
-          for (int i = 0; i < datetimes.length; i++)
-            Clock(
-              thisIndex: i,
-              dateTime: datetimes[i],
-              location: cityNames[clockIndexes[i]],
+          padding: const EdgeInsets.all(30),
+          crossAxisCount: 3,
+          mainAxisSpacing: 30,
+          crossAxisSpacing: 30,
+          childAspectRatio: 1.6,
+          children: [
+            for (int i = 0; i < datetimes.length; i++)
+              Clock(
+                thisIndex: i,
+                dateTime: datetimes[i],
+                location: cityNames[clockIndexes[i]],
+              ),
+            AddClock(
+              onTap: (BuildContext context) {
+                showClockSelectMenu(context, null);
+              },
             ),
-          AddClock(onTap: (BuildContext context){
-          showClockSelectMenu(context, null);
-        },),
-        ]),
+          ]),
     );
   }
 }
 
 void showClockSelectMenu(BuildContext context, int? changeIndex) {
   showDialog(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        backgroundColor: Colors.transparent,
-        child: SizedBox(
-          height: 500, width: 800,
-          child: ClockSelectMenu(changeIndex: changeIndex),
-        ),
-      );
-    }
-  );
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: SizedBox(
+            height: 500,
+            width: 800,
+            child: ClockSelectMenu(changeIndex: changeIndex),
+          ),
+        );
+      });
 }
