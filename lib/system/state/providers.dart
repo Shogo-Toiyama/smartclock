@@ -52,8 +52,13 @@ class ClockIndexNotifier extends Notifier<List<int>> {
 
   void changeClockIndex(List<int> indexes) {
     state = indexes;
-    ref.read(timesProvider.notifier).changeTimesList(indexes);
-    saveData('clockIndex', indexes);
+    ref.read(timesProvider.notifier).changeTimesList(state);
+    saveData('clockIndex', state);
+  }
+  void addClockIndex(int index) {
+    state.add(index);
+    ref.read(timesProvider.notifier).changeTimesList(state);
+    saveData('clockIndex', state);
   }
 }
 
@@ -144,6 +149,7 @@ final clockMoveStateProvider = NotifierProvider<ClockMoveStateNotifier, int>((){
   return ClockMoveStateNotifier();
 });
 
+// Show Add-Clock Button (decide whether it should be shown or not)
 class ShowAddClockButtonNotifier extends Notifier<bool> {
   @override
   bool build() {

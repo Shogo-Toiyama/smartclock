@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:smartclock/presentation/pages/clocks/clocks_page.dart';
 import 'package:smartclock/system/materials/color_palette.dart';
 import 'package:smartclock/system/state/providers.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -250,6 +251,7 @@ class Clock extends HookConsumerWidget {
                               ),
                               onTap: () {
                                 toggleMenu();
+                                showClockSelectMenu(context, thisIndex);
                               },
                             ),
                             ListTile(
@@ -530,18 +532,19 @@ class Clock extends HookConsumerWidget {
 }
 
 class AddClock extends ConsumerWidget {
-  const AddClock({super.key});
+  const AddClock({super.key, required this.onTap});
 
+  final Function(BuildContext)? onTap;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     double fontSize = ref.read(fontSizeProvider);
-    List<int> clockIndex = ref.read(clockIndexProvider);
     return Visibility(
       visible: ref.watch(showAddClockButtonProvider),
       child: GestureDetector(
-        onTap: () {
-          clockIndex.add(clockIndex.length);
-          ref.read(clockIndexProvider.notifier).changeClockIndex(clockIndex);
+        onTap: (){
+          if (onTap != null) {
+            onTap!(context);
+          }
         },
         child: Container(
           decoration: BoxDecoration(

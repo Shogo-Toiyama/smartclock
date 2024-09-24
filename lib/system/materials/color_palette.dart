@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class ColorPalette {
   
+  static const Color pageBackground = Color.fromRGBO(40, 40, 40, 1);
   static const Color clockBorderDaytime = Color.fromARGB(255, 253, 236, 77);
   static const Color clockBorderNight = Color.fromARGB(255, 46, 81, 196);
 
