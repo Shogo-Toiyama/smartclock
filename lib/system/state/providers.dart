@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smartclock/presentation/pages/clocks/timezone.dart';
 import 'package:smartclock/system/data/data_access.dart';
@@ -35,36 +36,27 @@ import 'package:timezone/timezone.dart' as tz;
 class ClockIndexNotifier extends Notifier<List<int>> {
   @override
   List<int> build() {
-    _loadClockIndex();
     return [];
-  }
-
-  Future<void> _loadClockIndex() async {
-    try {
-      final clockIndex = await loadDataListInt('clockIndex');
-      if (clockIndex != null) {
-        state = clockIndex;
-      }
-    } catch (e) {
-      log('Error loading clockIndex: $e');
-    }
   }
 
   void changeClockIndex(List<int> indexes) {
     state = indexes;
     ref.read(timesProvider.notifier).changeTimesList(state);
     saveData('clockIndex', state);
+    debugPrint('Data saved: $state');
   }
   void addClockIndex(int index) {
     state.add(index);
     ref.read(timesProvider.notifier).changeTimesList(state);
     saveData('clockIndex', state);
+    debugPrint('Data saved: $state');
   }
 }
 
 final clockIndexProvider = NotifierProvider<ClockIndexNotifier, List<int>>(() {
   return ClockIndexNotifier();
 });
+
 
 // Times (list of times that is shown)
 class TimesNotifier extends Notifier<List<tz.TZDateTime>> {
@@ -90,15 +82,7 @@ final timesProvider = NotifierProvider<TimesNotifier, List<tz.TZDateTime>>(() {
 class FontSizeNotifier extends Notifier<double> {
   @override
   double build() {
-    _loadFontSize();
     return 35;
-  }
-
-  Future<void> _loadFontSize() async {
-    final fontSize = await loadData('fontSize');
-    if (fontSize != null) {
-      state = fontSize;
-    }
   }
 
   void changeFontSize(double newFontSize) {
@@ -148,6 +132,7 @@ class ClockMoveStateNotifier extends Notifier<int> {
 final clockMoveStateProvider = NotifierProvider<ClockMoveStateNotifier, int>((){
   return ClockMoveStateNotifier();
 });
+
 
 // Show Add-Clock Button (decide whether it should be shown or not)
 class ShowAddClockButtonNotifier extends Notifier<bool> {

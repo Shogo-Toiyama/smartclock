@@ -40,9 +40,9 @@ class ClocksPage extends HookConsumerWidget {
           debugPrint('Update datetimes!\Now: ${DateTime.now()}');
         }
         counter += 1;
-        debugPrint(
-            'interval: $interval, counter: $counter, \n    Actual : ${DateTime.now()}');
-        debugPrint('    Showing: ${ref.read(timesProvider)[0]}');
+        // debugPrint(
+        //     'interval: $interval, counter: $counter, \n    Actual : ${DateTime.now()}');
+        // debugPrint('    Showing: ${ref.read(timesProvider)[0]}');
       });
       return timer.cancel;
     }, []);
