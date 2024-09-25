@@ -17,11 +17,11 @@ void main() async {
   runApp(app);
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final router = RouterClass().getRouter();
     return MaterialApp.router(
       title: 'smartclock',
