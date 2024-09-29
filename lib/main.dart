@@ -25,7 +25,6 @@ class MyApp extends StatelessWidget {
     final router = RouterClass().getRouter();
     return MaterialApp.router(
       title: 'smartclock',
-      locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
       routeInformationProvider: router.routeInformationProvider,
       routeInformationParser: router.routeInformationParser,

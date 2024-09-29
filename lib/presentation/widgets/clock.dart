@@ -89,6 +89,7 @@ class Clock extends HookConsumerWidget {
 
     return Stack(
       children: [
+        // main clock view
         GestureDetector(
           onTap: () {},
           child: Container(
@@ -185,6 +186,8 @@ class Clock extends HookConsumerWidget {
             ),
           ),
         ),
+
+        //Menu barrier
         Positioned(
           top: borderWidth,
           bottom: borderWidth,
@@ -202,6 +205,8 @@ class Clock extends HookConsumerWidget {
             ),
           ),
         ),
+
+        // Menu
         Positioned(
           right: borderWidth,
           top: borderWidth,
@@ -325,6 +330,8 @@ class Clock extends HookConsumerWidget {
             ),
           ),
         ),
+
+        // Remove Clock Dialog
         Positioned(
           top: borderWidth,
           bottom: borderWidth,
@@ -343,13 +350,13 @@ class Clock extends HookConsumerWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.delete,
                         color: Colors.red,
-                        size: 40,
+                        size: fontSize * 1.1,
                       ),
                       const SizedBox(
-                        height: 10,
+                        height: 5,
                       ),
                       Text(
                         'Are you sure you want to \nremove this clock?',
@@ -361,7 +368,7 @@ class Clock extends HookConsumerWidget {
                         ),
                       ),
                       const SizedBox(
-                        height: 10,
+                        height: 5,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -370,6 +377,7 @@ class Clock extends HookConsumerWidget {
                             width: 20,
                           ),
                           Container(
+                            height: 30,
                             decoration: const BoxDecoration(
                                 color: Colors.red,
                                 borderRadius:
@@ -396,9 +404,10 @@ class Clock extends HookConsumerWidget {
                             ),
                           ),
                           const SizedBox(
-                            width: 60,
+                            width: 40,
                           ),
                           Container(
+                            height: 30,
                             decoration: const BoxDecoration(
                                 color: Colors.white,
                                 borderRadius:
@@ -430,6 +439,8 @@ class Clock extends HookConsumerWidget {
             ),
           ),
         ),
+
+        // Move Clock Cancel
         Positioned(
           top: borderWidth,
           bottom: borderWidth,
@@ -478,6 +489,8 @@ class Clock extends HookConsumerWidget {
             ),
           ),
         ),
+
+        // Move Clock Here
         Positioned(
           top: borderWidth,
           bottom: borderWidth,
@@ -541,7 +554,7 @@ class AddClock extends ConsumerWidget {
     return Visibility(
       visible: ref.watch(showAddClockButtonProvider),
       child: GestureDetector(
-        onTap: (){
+        onTap: () {
           if (onTap != null) {
             onTap!(context);
           }

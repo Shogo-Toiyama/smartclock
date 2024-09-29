@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smartclock/presentation/pages/clocks/timezone.dart';
 import 'package:smartclock/system/data/data_access.dart';
@@ -36,14 +34,12 @@ class ClockIndexNotifier extends Notifier<List<int>> {
     state = indexes;
     ref.read(timesProvider.notifier).changeTimesList(state);
     saveData('clockIndex', state);
-    debugPrint('Data saved: $state');
   }
 
   void addClockIndex(int index) {
     state.add(index);
     ref.read(timesProvider.notifier).changeTimesList(state);
     saveData('clockIndex', state);
-    debugPrint('Data saved: $state');
   }
 }
 
@@ -77,7 +73,7 @@ final timesProvider = NotifierProvider<TimesNotifier, List<tz.TZDateTime>>(() {
 class FontSizeNotifier extends Notifier<double> {
   @override
   double build() {
-    return 35;
+    return 25;
   }
 
   void changeFontSize(double newFontSize) {

@@ -37,12 +37,8 @@ class ClocksPage extends HookConsumerWidget {
           ref.read(timesProvider.notifier).changeTimesList(clockIndexes);
           counter = 0;
           interval = findInterval();
-          debugPrint('Update datetimes!\Now: ${DateTime.now()}');
         }
         counter += 1;
-        // debugPrint(
-        //     'interval: $interval, counter: $counter, \n    Actual : ${DateTime.now()}');
-        // debugPrint('    Showing: ${ref.read(timesProvider)[0]}');
       });
       return timer.cancel;
     }, []);
@@ -81,8 +77,8 @@ void showClockSelectMenu(BuildContext context, int? changeIndex) {
         return Dialog(
           backgroundColor: Colors.transparent,
           child: SizedBox(
-            height: 500,
-            width: 800,
+            height: 450,
+            width: 700,
             child: ClockSelectMenu(changeIndex: changeIndex),
           ),
         );

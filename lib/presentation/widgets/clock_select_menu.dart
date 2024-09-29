@@ -72,6 +72,7 @@ class ClockMenuTile extends ConsumerWidget {
   final String location;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final double fontSize = ref.read(fontSizeProvider);
     return ListTile(
       onTap: () {
         Navigator.of(context).pop();
@@ -88,9 +89,9 @@ class ClockMenuTile extends ConsumerWidget {
         padding: const EdgeInsets.all(10),
         child: Text(
           location,
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
-            fontSize: 25,
+            fontSize: fontSize * 0.7,
           ),
         ),
       ),
